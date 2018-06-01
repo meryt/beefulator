@@ -1,0 +1,6 @@
+module.exports = Object.freeze({
+  DESIRED_MEAL_SIZE: 535,
+  BEFF_CONTAINER_WEIGHT: 270,
+  JAPANESE_WEIGHT: 247,
+  RUBBERMAID_WEIGHT: 213
+});

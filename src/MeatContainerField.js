@@ -6,10 +6,7 @@ import {
   Label,
   Row
 } from 'reactstrap';
-
-let DESIRED_MEAL_SIZE = 535;
-let JAPANESE_WEIGHT = 247;
-let RUBBERMAID_WEIGHT = 213;
+import Constants from './Constants';
 
 class MeatContainerField extends Component {
 
@@ -17,11 +14,31 @@ class MeatContainerField extends Component {
     super(props);
     this.state = {
       weight: '',
-      tupperwareWeight: JAPANESE_WEIGHT,
+      tupperwareWeight: Constants.JAPANESE_WEIGHT,
       beefHeartNeeded: null
     }
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
+
+    var tupperwareWeight;
+    if (event.target.name === 'Japanese') {
+      tupperwareWeight = Constants.JAPANESE_WEIGHT;
+    } else {
+      tupperwareWeight = Constants.RUBBERMAID_WEIGHT;
+    }
+
+    let existingWeight = this.state.weight;
+    let weightOfMeat = existingWeight - tupperwareWeight;
+    var beefHeartNeeded = Constants.DESIRED_MEAL_SIZE - weightOfMeat;
+    if (beefHeartNeeded < 0) {
+      beefHeartNeeded = 0;
+    }
+
+    this.setState({tupperwareWeight: tupperwareWeight, beefHeartNeeded: beefHeartNeeded});
   }
 
   handleChange(event) {
@@ -31,31 +48,20 @@ class MeatContainerField extends Component {
       let newWeight = event.target.value;
       let existingTupperwearWeight = this.state.tupperwareWeight;
       let weightOfMeat = newWeight - existingTupperwearWeight;
-      beefHeartNeeded = DESIRED_MEAL_SIZE - weightOfMeat;
+      beefHeartNeeded = Constants.DESIRED_MEAL_SIZE - weightOfMeat;
       if (beefHeartNeeded < 0) {
         beefHeartNeeded = 0;
       }
 
       this.setState({weight: event.target.value, beefHeartNeeded: beefHeartNeeded});
-    } else if (event.target.name.startsWith('containerType')) {
-      let existingWeight = this.state.weight;
-      let newTupperwearWeight = event.target.value;
-      let weightOfMeat = existingWeight - newTupperwearWeight;
-      beefHeartNeeded = DESIRED_MEAL_SIZE - weightOfMeat;
-      if (beefHeartNeeded < 0) {
-        beefHeartNeeded = 0;
-      }
-
-      this.setState({tupperwareWeight: event.target.value, beefHeartNeeded: beefHeartNeeded});
     }
-
     this.props.onMealWeightChanged(this.props.index, beefHeartNeeded);
   }
 
   render() {
 
     let myId = "meatContainerField" + this.props.index;
-    let myContainerId = "containerType" + this.props.index;
+    let myContainerId = "ContainerType" + this.props.index;
 
     var className = 'remaining ';
     if (this.state.weight === '' || this.state.weight <= 0) {
@@ -67,6 +73,9 @@ class MeatContainerField extends Component {
       className += 'remaining-warning';
     }
 
+    let selectedOptionClass = 'btn btn-success';
+    let unselectedOptionClass = 'btn btn-outline-success';
+
     return (
       <FormGroup>
         <Row>
@@ -76,23 +85,21 @@ class MeatContainerField extends Component {
         </Row>
         <div className="form-row">
           <Col>
-            <Input type="select" name={myContainerId} id={myContainerId} value={this.state.tupperwareWeight} onChange={this.handleChange}>
-              <option value={JAPANESE_WEIGHT}>Japanese</option>
-              <option value={RUBBERMAID_WEIGHT}>Rubbermaid</option>
-            </Input>
+            <div className="btn-group btn-group-toggle" data-toggle="buttons" >
+              <label className={ this.state.tupperwareWeight === Constants.JAPANESE_WEIGHT ? selectedOptionClass : unselectedOptionClass }>
+                <input type="radio" name="Japanese" id={'Japanese' + myContainerId} autoComplete="off" onClick={this.handleClick} /> Japanese
+              </label>
+              <label className={ this.state.tupperwareWeight === Constants.JAPANESE_WEIGHT ? unselectedOptionClass : selectedOptionClass }>
+                <input type="radio" name="Rubbermaid" id={'Rubbermaid' + myContainerId} autoComplete="off" onClick={this.handleClick} /> Rubbermaid
+              </label>
+            </div>
             <p className={className}>Will need: {this.state.beefHeartNeeded} g</p>
           </Col>
           <Col>
-            <Input type="number" name={myId} id={myId} placeholder="grams" value={this.state.weight} onChange={this.handleChange} />
+            <Input type="tel" name={myId} id={myId} placeholder="grams" value={this.state.weight} onChange={this.handleChange} />
             <p className={className}>{(beefHeartRemaining > 0) ? 'Leaving: ' + beefHeartRemaining :  'Short by: ' + (-1 * beefHeartRemaining) } g</p>
           </Col>
         </div>
-        <Row>
-          <Col>
-
-          </Col>
-        </Row>
-
       </FormGroup>
     )
   }

@@ -3,10 +3,8 @@ import {
   FormGroup,
   Input,
   Label
-
 } from 'reactstrap';
-
-let BEFF_CONTAINER_WEIGHT = 270;
+import Constants from './Constants';
 
 class BeefHeartField extends Component {
   constructor(props) {
@@ -20,7 +18,7 @@ class BeefHeartField extends Component {
   }
 
   handleChange(event) {
-    let beefHeartWeight = event.target.value - BEFF_CONTAINER_WEIGHT;
+    let beefHeartWeight = event.target.value - Constants.BEFF_CONTAINER_WEIGHT;
     this.setState({beefHeartWeight: beefHeartWeight, beefHeartPlusContainerWeight: event.target.value});
 
     this.props.onBeefHeartWeightChanged(beefHeartWeight);
@@ -33,11 +31,10 @@ class BeefHeartField extends Component {
       className += 'hidden ';
     }
 
-
     return (
       <FormGroup>
         <Label for="beefHeartField">Beef Heart Container</Label>
-        <Input type="numeric" name="beefHeartField" id="beefHeartField" placeholder="Total weight, with container, in grams"
+        <Input type="tel" name="beefHeartField" id="beefHeartField" placeholder="Total weight, with container, in grams"
           value={this.state.beefHeartPlusContainerWeight} onChange={this.handleChange}/>
         <p className={className}>Beef heart weight: {this.state.beefHeartWeight} g</p>
       </FormGroup>
