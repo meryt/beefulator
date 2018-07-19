@@ -49,10 +49,6 @@ class MeatContainerField extends Component {
       let existingTupperwearWeight = this.state.tupperwareWeight;
       let weightOfMeat = newWeight - existingTupperwearWeight;
       beefHeartNeeded = Constants.DESIRED_MEAL_SIZE - weightOfMeat;
-      if (beefHeartNeeded < 0) {
-        beefHeartNeeded = 0;
-      }
-
       this.setState({weight: event.target.value, beefHeartNeeded: beefHeartNeeded});
     }
     this.props.onMealWeightChanged(this.props.index, beefHeartNeeded);
